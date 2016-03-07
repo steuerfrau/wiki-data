@@ -1,0 +1,77 @@
+WLAN through/etc/network/interfaces hier beschreiben...
+
+{{{#!highlight shell-session
+# aptitude install wpasupplicant wireless-tools
+}}}
+
+{{{#!highlight shell-session
+# chmod 0600 /etc/network/interfaces
+}}}
+
+{{{#!highlight shell-session
+# service network-manager stop
+}}}
+
+{{{#!highlight shell-session
+# rfkill unblock all
+# ip link set up dev wlan0
+# iwlist wlan0 scanning | less
+}}}
+
+{{{#!highlight shell-session
+melly@m01n039 [2020] $ sudo wpa_passphrase WLAN-CEDE48 1470040335647008
+network={
+	ssid="WLAN-CEDE48"
+	#psk="1470040335647008"
+	psk=b1ee140c3d929466f6003ee25b2a0a6850c5bfab51f078730744c3c34eaa452b
+}
+}}}
+
+{{{#!highlight shell-session
+auto wlan0
+iface wlan0 inet dhcp
+        wpa-ssid WLAN-CEDE48
+        wpa-psk b1ee140c3d929466f6003ee25b2a0a6850c5bfab51f078730744c3c34eaa452b
+}}}
+
+{{{#!highlight shell-session
+melly@m01n039 [2025] $ sudo ifup wlan0
+Internet Systems Consortium DHCP Client 4.3.1
+Copyright 2004-2014 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+Listening on LPF/wlan0/00:23:14:94:c3:ec
+Sending on   LPF/wlan0/00:23:14:94:c3:ec
+Sending on   Socket/fallback
+DHCPDISCOVER on wlan0 to 255.255.255.255 port 67 interval 5
+DHCPDISCOVER on wlan0 to 255.255.255.255 port 67 interval 8
+DHCPREQUEST on wlan0 to 255.255.255.255 port 67
+DHCPOFFER from 192.168.110.1
+DHCPACK from 192.168.110.1
+bound to 192.168.110.103 -- renewal in 806674 seconds.
+}}}
+
+= Create Bonding Device =
+{{{#!highlight shell-session
+auto eth0
+iface eth0 inet manual
+    bond-master bond0
+    bond-primary eth0
+    bond-mode active-backup
+
+auto wlan0
+iface wlan0 inet dhcp
+    bond-master bond0
+    bond-primary eth0
+    bond-mode active-backup
+    wpa-ssid WLAN-CEDE48
+    wpa-psk b1ee140c3d929466f6003ee25b2a0a6850c5bfab51f078730744c3c34eaa452b
+
+auto bond0
+iface bond0 inet dhcp
+    bond-slaves none
+    bond-primary eth0
+    bond-mode active-backup
+    bond-miimon 100
+}}}

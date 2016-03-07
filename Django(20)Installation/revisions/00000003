@@ -1,0 +1,18 @@
+Install Django with Python 3 support and MySQL database backend on Debian Jessie:
+
+{{{#!highlight shell-session
+# aptitude install python3-django
+}}}
+
+Test Django installation
+{{{#!highlight shell-session
+$ python3 -c "import django; print(django.get_version())"
+1.7.7
+}}}
+
+Setup Django project "admin"
+{{{
+$ mkdir -p django
+$ cd django
+$ django-admin startproject admin
+}}}

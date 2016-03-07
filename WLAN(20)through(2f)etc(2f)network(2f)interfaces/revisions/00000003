@@ -1,0 +1,28 @@
+WLAN through/etc/network/interfaces hier beschreiben...
+
+{{{#!highlight shell-session
+# aptitude install wpasupplicant wireless-tools
+}}}
+
+{{{#!highlight shell-session
+# chmod 0600 /etc/network/interfaces
+}}}
+
+{{{#!highlight shell-session
+# service network-manager stop
+}}}
+
+{{{#!highlight shell-session
+# rfkill unblock all
+# ip link set up dev wlan0
+# iwlist wlan0 scanning | less
+}}}
+
+{{{#!highlight shell-session
+melly@m01n039 [2020] $ sudo wpa_passphrase WLAN-CEDE48 1470040335647008
+network={
+	ssid="WLAN-CEDE48"
+	#psk="1470040335647008"
+	psk=b1ee140c3d929466f6003ee25b2a0a6850c5bfab51f078730744c3c34eaa452b
+}
+}}}

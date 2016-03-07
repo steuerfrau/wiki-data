@@ -1,0 +1,63 @@
+Add Saltstack repository:
+/srv/fai/config/hooks/updatebase.DEBIAN
+{{{#!highlight
+#! /bin/bash
+
+if [ -n "$APTPROXY" ]; then
+    echo "Acquire::http::Proxy \"$APTPROXY\";" > $target/etc/apt/apt.conf.d/02proxy
+else
+    rm -f $target/etc/apt/apt.conf.d/02proxy
+fi
+
+echo force-unsafe-io > $target/etc/dpkg/dpkg.cfg.d/unsafe-io
+
+ifclass SALT-MINION && {
+    # https does not work, as certificate is not accepted. Check and fix!
+    wget -O - http://repo.saltstack.com/apt/debian/8/amd64/latest/SALTSTACK-GPG-KEY.pub | chroot /target apt-key add -
+    echo "deb http://repo.saltstack.com/apt/debian/8/amd64/latest jessie main" >> /target/etc/apt/sources.list.d/repo_saltstack_com.list
+    chroot /target apt-get update
+}
+# you may want to add i386 arch to amd64 hosts
+# if ifclass AMD64; then
+#     $ROOTCMD dpkg --add-architecture i386
+# fi
+
+}}}
+
+Create file:
+/srv/fai/config/package_config/SALT-MINION
+with content
+{{{#!highlight
+PACKAGES aptitude SALT-MINION
+salt-minion
+}}}
+
+/srv/fai/config/scripts/SALT-MINION/10-salt-minion
+{{{#!highlight
+#! /bin/bash
+
+# (c) Thomas Lange, 2001-2013, lange@debian.org
+
+error=0; trap 'error=$(($?>$error?$?:$error))' ERR # save maximum error code
+
+ifclass SALT-MINION && {
+    sed -i "s/^\s*\#\s*master:.*/master: mel01deploy02.hoppetosse.loc/" /etc/salt/minion
+}
+
+}}}
+
+Adding the class "SALT-MINION" to 50-host-classes for the desired host:
+
+/srv/fai/config/class/50-host-classes
+{{{#!higlight
+#! /bin/bash
+
+# assign classes to hosts
+
+# use a list of classes for our demo machine
+case $HOSTNAME in
+    mel01testpxe01)
+        echo "FAIBASE DEBIAN DHCP GERMAN SALT-MINION HOPPETOSSE_CLUSTER_KVM CRYPT_BOOT MEL_PKGS" ;;
+        # echo "HOPPETOSSE_CLUSTER_TST DEBIAN_HPT_PCM DHCP" ;;
+
+}}}

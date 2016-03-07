@@ -1,0 +1,36 @@
+Create file:
+/srv/fai/config/package_config/SALT-MINION
+with content
+{{{#!highlight
+PACKAGES aptitude SALT-MINION
+salt-minion
+}}}
+
+/srv/fai/config/scripts/SALT-MINION/10-salt-minion
+{{{#!highlight
+#! /bin/bash
+
+# (c) Thomas Lange, 2001-2013, lange@debian.org
+
+error=0; trap 'error=$(($?>$error?$?:$error))' ERR # save maximum error code
+
+ifclass SALT-MINION && {
+    sed -i "s/^\s*\#\s*master:.*/master: mel01deploy02.hoppetosse.loc/" /etc/salt/minion
+}
+
+}}}
+
+Adding the class "SALT-MINION" to 50-host-classes for the desired host:
+/srv/fai/config/class/50-host-classes
+{{{#!higlight
+#! /bin/bash
+
+# assign classes to hosts
+
+# use a list of classes for our demo machine
+case $HOSTNAME in
+    mel01testpxe01)
+        echo "FAIBASE DEBIAN DHCP GERMAN SALT-MINION HOPPETOSSE_CLUSTER_KVM CRYPT_BOOT MEL_PKGS" ;;
+        # echo "HOPPETOSSE_CLUSTER_TST DEBIAN_HPT_PCM DHCP" ;;
+
+}}}

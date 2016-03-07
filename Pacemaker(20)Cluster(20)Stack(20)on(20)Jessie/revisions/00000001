@@ -1,0 +1,72 @@
+Pacemaker Cluster Stack on Jessie hier beschreiben...
+
+On 29/01/16 12:01 PM, Richard B Winters wrote:
+> Hello,
+> 
+> I thought it might be nice (with a good recommendation from the ClusterLabs' IRC community), to send an email to the users ML which describes the current state of the cluster stack as it exists in Debian.
+> 
+> As some may already know, the Debian-HA team had missed the 'Freeze' date for the Jessie release of Debian. The result of this was that any packages which are maintained by the Debian-HA-Maintainers team - and which were not ready for migration to testing; were not included in the release of Debian Jessie. This is closely followed by a policy which excludes the aforementioned packages from the Jessie (main) repository permanently.
+> 
+> Our only option at this point is to prepare the cluster stack and provide an alternative method for Debian users to utilize said packages - until the next Debian release.
+> 
+> With that said, the team has become active and is full of new members and sponsors. We have been working quite diligently since October of 2014, in order to prepare the cluster stack (the latest stack) for Debian.  So far we have uploaded (into unstable/sid) :
+> 
+> Libqb
+> Pacemaker
+> Corosync
+> DLM
+> DRBD/Utils
+> CRMSH
+> Fence-Agents
+> Ruby-Rpam-Ruby19
+> Ruby-Monkey-Lib
+> PCS
+> 
+> Some of the above packages have already migrated to testing, others are still in the NEW queue.
+> 
+> We also have prepared, and are reviewing prior to upload:
+> 
+> Cluster-Glue
+> Resource-Agents
+> 
+> 
+> Any who are interested in getting involved and helping out, we have much left to do - even once all the packages are in Debian sid/stretch.  For more information, one could visit our wiki [1], browse our public repository [2], or check our homepage [3] from time to time for updates (once we start regularly posting there).
+> 
+> I have also been personally hosting a PPA [4] for Debian users, until we are able to provide a more official solution.  Please be advised that the packages on my PPA are not actually 100% up-to-date at this time, but are still usable (I'll be updating soon!).
+> 
+> I'll do my best to post updates regularly, if for no other reason; to keep interested parties informed of our progress!
+
+There is also the clusterlabs developers list
+(http://clusterlabs.org/mailman/listinfo/developers), if you want to CC
+development progress reports there.
+
+As I said in IRC, I am looking forward to being able to add Debian to
+the list of well supported distros. Please keep up the good work!
+
+> References:
+> 
+> [1] https://wiki.debian.org/Debian-HA/
+> [2] https://anonscm.debian.org/cgit/debian-ha/
+> [3] https://debian-ha.alioth.debian.org/
+> [4] https://ppa.mmogp.com/
+> 
+> 
+> Best regards,
+> 
+> 
+> Richard B Winters (Rik/devrikx)
+> 
+> _______________________________________________
+> Users mailing list: Users at clusterlabs.org
+> http://clusterlabs.org/mailman/listinfo/users
+> 
+> Project Home: http://www.clusterlabs.org
+> Getting started: http://www.clusterlabs.org/doc/Cluster_from_Scratch.pdf
+> Bugs: http://bugs.clusterlabs.org
+> 
+
+-- 
+Digimer
+Papers and Projects: https://alteeve.ca/w/
+What if the cure for cancer is trapped in the mind of a person without
+access to education?

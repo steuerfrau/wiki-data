@@ -1,0 +1,16 @@
+To install OpenVSwitch on Debian Jessie:
+{{{#!highlight shell-session
+$ sudo aptitude install openvswitch-switch
+}}}
+
+Create a bridge device to connect the LXC machines to:
+{{{
+# ovs-vsctl add-br melovsbr01
+}}}
+
+Add eth0 to the bridge:
+{{{
+# ovs-vsctl add-port melovsbr01 eth0 tag=100
+}}}
+
+Configure LXC containers to use the bridge:

@@ -1,0 +1,93 @@
+Create the "System" app:
+{{{#!highlight shell-session
+$ python3 manage.py startapp system
+}}}
+
+Create the following model in admin/system/models.py:
+
+{{{#!highlight python
+from django.db import models
+
+
+class Area(models.Model):
+    area_id = models.AutoField(primary_key=True)
+    area = models.CharField(max_length=255)
+    area_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.area
+
+
+class Landspace(models.Model):
+    landspace_id = models.AutoField(primary_key=True)
+    landspace = models.CharField(max_length=75)
+    landspace_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.landspace
+
+
+class Type(models.Model):
+    type_id = models.AutoField(primary_key=True)
+    type = models.CharField(max_length=75)
+    type_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.type
+
+
+class System(models.Model):
+    system_id = models.AutoField(primary_key=True)
+    system = models.CharField(max_length=75)
+    system_description = models.CharField(max_length=255, blank=True)
+    system_note = models.TextField(blank=True)
+    area = models.ForeignKey(Area, blank=True, null=True, on_delete=models.SET_NULL)
+    landspace = models.ForeignKey(Landspace, blank=True, null=True, on_delete=models.SET_NULL)
+    type = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.system
+
+class NetworkService(models.Model):
+    network_service_id = models.AutoField(primary_key=True)
+    network_service = models.CharField(max_length=75, unique=True)
+    network_service_description = models.CharField(max_length=255, blank=True)
+    network_service_note = models.TextField(blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.network_service
+
+
+class CustomerService(models.Model):
+    customer_service_id = models.AutoField(primary_key=True)
+    customer_service = models.CharField(max_length=75, unique=True)
+    customer_service_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.customer_service
+
+
+class NetworkServiceMap(models.Model):
+    network_service_map_id = models.AutoField(primary_key=True)
+    system = models.ForeignKey(System)
+    network_service = models.ForeignKey(NetworkService)
+    network_service_map_description = models.CharField(max_length=255, blank=True)
+    customer_service = models.ForeignKey(CustomerService, blank=True, null=True, on_delete=models.SET_NULL)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.network_service_map_description
+
+
+class Backup(model.Model):
+    backup_id = models.AutoField(primary_key=True)
+    backup_description = models.CharField(max_length=255, blank=True)
+    backup_host = models.CharField(max_length=75)
+    backup_location = models.CharField(max_length=75) # Make seperate table
+    backup_basedir = models.CharField(max_length=255)
+    system = models.ForeignKey(System)
+    backup_scheme = models.CharField(max_length=255) # Make seperate table
+    backup_type= models.CharField(max_length=255) # Make seperate table
+
+
+class Filesystem(model.Model):
+    filesystem = models.AutoField(primary_key=True)
+    filesystem_type =  models.CharField(max_length=75) # Make seperate table
+    filesystem_mountpoint = models.CharField(max_length=255)
+    filesystem_storagebackend = models.CharField(max_length=75) # Make seperate table
+    system = models.ForeignKey(System)
+    filesystem_devicefile = models.CharField(max_length=75)
+
+}}}

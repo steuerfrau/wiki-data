@@ -1,0 +1,5 @@
+{{{#!highlight
+# aptitude install fai-quickstart
+# sed -e 's/#LOGUSER/LOGUSER/' /etc/fai/fai.conf
+# fai-setup -v
+}}}

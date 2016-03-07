@@ -1,0 +1,41 @@
+Install Django with Python 3 support and MySQL database backend on Debian Jessie:
+
+{{{#!highlight shell-session
+# aptitude install python3-django
+}}}
+
+Test Django installation
+{{{#!highlight shell-session
+$ python3 -c "import django; print(django.get_version())"
+1.7.7
+}}}
+
+Setup Django project "admin"
+{{{#!highlight shell-session
+$ mkdir -p django
+$ cd django
+$ django-admin startproject admin
+}}}
+
+Now we install the necessary MySQL database package and the database driver. I choose the connector driver, as there is a package in the default repos available and not the driver recommended on the Django website.
+{{{#!highlight shell-session
+aptitude install mysql-server python3-mysql.connector
+}}}
+
+Enter the MySQL shell:
+{{{#!highlight shell-session
+$ mysql -u root -p
+Enter password: 
+}}}
+
+Create the Django user account in MySQL:
+{{{#!highlight mysql
+mysql> create database system;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> CREATE USER 'django'@'localhost' IDENTIFIED BY 'Etae%w8A';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL PRIVILEGES ON system.* to django@localhost;
+Query OK, 0 rows affected (0.00 sec)
+}}}

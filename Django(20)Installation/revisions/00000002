@@ -1,0 +1,5 @@
+Install Django with Python 3 support and MySQL database backend on Debian Jessie:
+
+{{{#!highlight shell-session
+aptitude install python3-django
+}}}

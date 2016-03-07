@@ -1,0 +1,5 @@
+    aptitude install puppet puppetmaster vim-puppet
+
+https://docs.puppetlabs.com/puppet/3.8/reference/install_debian_ubuntu.html
+
+    puppet module install puppetlabs-stdlib

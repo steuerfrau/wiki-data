@@ -1,0 +1,8 @@
+{{{#!highlight
+sudo aptitude install pxelinux
+
+sudo cp /usr/lib/PXELINUX/pxelinux.0 /var/lib/tftpboot/
+sudo cp /usr/lib/syslinux/modules/bios/menu.c32 /var/lib/tftpboot/
+}}}
+
+https://www.thomas-krenn.com/de/wiki/Implementierung_eines_FAI-Servers_unter_Ubuntu#Netzwerk_des_Server_konfigurieren

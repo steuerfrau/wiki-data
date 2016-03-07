@@ -1,0 +1,110 @@
+I installed MoinMoin on Debian 8 Jessie using the following steps:
+
+{{{#!highlight shell-session
+aptitude install python-moinmoin apache2                                    
+}}}
+                      
+Edit the last two lines of /etc/moin/mywiki.py:
+{{{#!highlight python
+# -*- coding: iso-8859-1 -*-
+# IMPORTANT! This encoding (charset) setting MUST be correct! If you live in a
+# western country and you don't know that you use utf-8, you probably want to
+# use iso-8859-1 (or some other iso charset). If you use utf-8 (a Unicode
+# encoding) you MUST use: coding: utf-8
+# That setting must match the encoding your editor uses when you modify the
+# settings below. If it does not, special non-ASCII chars will be wrong.
+
+"""
+This is a sample config for a wiki that is part of a wiki farm and uses
+farmconfig for common stuff. Here we define what has to be different from
+the farm's common settings.
+"""
+
+# we import the FarmConfig class for common defaults of our wikis:
+from farmconfig import FarmConfig
+
+# now we subclass that config (inherit from it) and change what's different:
+class Config(FarmConfig):
+
+    # basic options (you normally need to change these)
+    sitename = u'MyWiki' # [Unicode]
+    interwikiname = u'MyWiki' # [Unicode]
+
+    # name of entry page / front page [Unicode], choose one of those:
+
+    # a) if most wiki content is in a single language
+    #page_front_page = u"MyStartingPage"
+
+    # b) if wiki content is maintained in many languages
+    page_front_page = u"FrontPage"
+
+    data_dir = '/var/lib/mywiki/data'
+    data_underlay_dir = '/var/lib/mywiki/underlay'
+}}}         
+Copy some settings:
+{{{#!highlight shell-session
+mkdir -p /var/www/mywiki                                                         
+mkdir -p /var/lib/mywiki                                                         
+cp -r /usr/share/moin/data /usr/share/moin/underlay /var/lib/mywiki              
+chown -R www-data: /var/lib/mywiki /var/www/mywiki  
+}}}
+                                                                               
+Edit /etc/apache2/sites-enabled/000-default.conf  
+{{{#!highlight apache
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port that
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        ServerName 121-iris.hoppetosse.loc
+
+        ServerAdmin melly@localhost
+        DocumentRoot /var/www/html
+
+        <Directory "/usr/share/moin/server/">
+            Options ExecCGI
+            AllowOverride All
+            Order allow,deny
+            Allow from all
+            SetHandler cgi-script
+        </Directory>
+
+        Alias /moin_static198/ "/usr/share/moin/htdocs/"
+        ScriptAlias /MyWiki "/usr/share/moin/server/moin.cgi/"
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+}}}                               
+                                                                                 
+Install the memodump theme:                             
+{{{#!highlight shell-session                                                                                 
+sudo aptitude install git                                                        
+git clone https://github.com/dossist/moinmoin-memodump.git                       
+cp memodump.py /usr/share/moin/data/plugin/theme/                                
+cp memodump.py /usr/lib/python2.7/dist-packages/MoinMoin/theme/                                                                                   
+cp -r memodump /usr/share/moin/htdocs/                                           
+}}}                                                                                 
+                                                                                 
+                
+                                                                                 
+                                                                                 
+ 

@@ -1,0 +1,43 @@
+=Install OpenVSwitch on Debian Jessie:
+{{{#!highlight shell-session
+$ sudo aptitude install openvswitch-switch
+}}}
+
+=Configure LXC to use Bridge
+
+Create a small script to configure the interface for a new started container. (/etc/lxv/ovsup)
+{{{#!highlight bash
+#!/bin/bash
+
+BRIDGE="melovsbr0"
+ovs-vsctl --may-exist add-br $BRIDGE
+ovs-vsctl --if-exists del-port $BRIDGE $5
+ovs-vsctl --may-exist add-port $BRIDGE $5
+}}}
+
+Configure LXC containers to use the script on startup. (In container "config" file.)
+{{{#!highlight
+#lxc.network.link = melovsbr0
+lxc.network.script.up = /etc/lxc/ovsup
+}}}
+
+=Manually Create Bridge
+
+Create a bridge device to connect the LXC machines to:
+{{{#!highlight
+# ovs-vsctl add-br melovsbr0
+}}}
+
+Add eth0 to the bridge:
+{{{#!highlight
+# ovs-vsctl add-port melovsbr0 eth0 # tag=100
+}}}
+
+
+Add IP address to OpenVSwitch, so that host can be accessed this way:
+{{{#!highlight shell-session
+# ip address add 192.168.110.61/24 dev melovsbr0
+}}}
+
+=Create Boot Persistent Bridge Configuration
+

@@ -1,0 +1,12 @@
+= Manual Configuration =
+Activate eth0 and wlan0
+
+Set up bond over OpenVSwitch with:
+{{{#!highlight shell-session
+ovs-vsctl add-br br0
+ovs-vsctl set bridge br0 other-config:hwaddr=00:23:14:94:c3:ec
+# ovs-vsctl add-port br0 eth0
+ip l s up dev br0
+# dhclient br0
+}}}
+The second command should set the bridge to the MAC address of the WLAN interface.

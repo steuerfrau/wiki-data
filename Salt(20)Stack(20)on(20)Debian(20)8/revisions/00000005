@@ -1,0 +1,25 @@
+= Install Repositories =
+{{{#!highlight
+    wget -O - https://repo.saltstack.com/apt/debian/8/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
+    wget -O - http://debian.saltstack.com/debian-salt-team-joehealy.gpg.key|apt-key add -
+    echo "deb http://repo.saltstack.com/apt/debian/8/amd64/latest jessie main" >> /etc/apt/sources.list
+
+}}}
+
+= Install Salt Master =
+
+{{{#!highlight
+    aptitude install salt-master
+}}}
+
+= Install Salt Minion =
+
+{{{#!highlight
+    aptitude install salt-minion
+}}}
+
+/etc/salt/minion
+{{{#!highlight
+- #master: salt
++ master: 10.0.0.1
+}}}

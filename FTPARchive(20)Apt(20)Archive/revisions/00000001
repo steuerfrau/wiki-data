@@ -1,0 +1,13 @@
+https://wiki.debian.org/SettingUpSignedAptRepositoryWithReprepro
+
+{{{#!highlight
+gpg --key-gen
+}}}
+
+{{{#!highlight
+aptitude install apache2
+}}}
+
+{{{#!highlight
+sudo aptitude install reprepro
+}}}

@@ -1,0 +1,23 @@
+WLAN through/etc/network/interfaces hier beschreiben...
+
+{{{#!highlight shell-session
+# aptitude install wpasupplicant wireless-tools
+}}}
+
+{{{#!highlight shell-session
+# chmod 0600 /etc/network/interfaces
+}}}
+
+{{{#!highlight shell-session
+# service network-manager stop
+}}}
+
+{{{#!highlight shell-session
+# rfkill unblock all
+# ip link set up dev wlan0
+# iwlist wlan0 scanning | less
+}}}
+
+{{{#!highlight shell-session
+
+}}}

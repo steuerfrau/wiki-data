@@ -1,0 +1,20 @@
+[[https://wiki.debian.org/Debian-HA/]]
+
+[[https://anonscm.debian.org/cgit/debian-ha/]]
+
+[[https://debian-ha.alioth.debian.org/]]
+
+[[https://ppa.mmogp.com/]]
+
+= Use Testing Archives (Stretch) =
+
+{{{
+deb http://http.debian.net/debian jessie-backports main
+}}}h
+
+{{{
+cat /etc/apt/preferences.d/preferences-backports 
+Package: *
+Pin: release a=jessie-backports
+Pin-Priority: -10
+}}}

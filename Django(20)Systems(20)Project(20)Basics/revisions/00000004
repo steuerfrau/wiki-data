@@ -1,0 +1,228 @@
+Create the "System" app:
+{{{#!highlight shell-session
+$ python3 manage.py startapp system
+}}}
+
+Create the following model in admin/system/models.py:
+
+{{{#!highlight python
+from django.db import models
+
+
+class Area(models.Model):
+    area_id = models.AutoField(primary_key=True)
+    area = models.CharField(max_length=255)
+    area_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.area
+
+
+class Landspace(models.Model):
+    landspace_id = models.AutoField(primary_key=True)
+    landspace = models.CharField(max_length=75)
+    landspace_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.landspace
+
+
+class Type(models.Model):
+    type_id = models.AutoField(primary_key=True)
+    type = models.CharField(max_length=75)
+    type_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.type
+
+
+class System(models.Model):
+    system_id = models.AutoField(primary_key=True)
+    system = models.CharField(max_length=75)
+    system_description = models.CharField(max_length=255, blank=True)
+    system_note = models.TextField(blank=True)
+    area = models.ForeignKey(Area, blank=True, null=True, on_delete=models.SET_NULL)
+    landspace = models.ForeignKey(Landspace, blank=True, null=True, on_delete=models.SET_NULL)
+    type = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.system
+
+class NetworkService(models.Model):
+    network_service_id = models.AutoField(primary_key=True)
+    network_service = models.CharField(max_length=75, unique=True)
+    network_service_description = models.CharField(max_length=255, blank=True)
+    network_service_note = models.TextField(blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.network_service
+
+
+class CustomerService(models.Model):
+    customer_service_id = models.AutoField(primary_key=True)
+    customer_service = models.CharField(max_length=75, unique=True)
+    customer_service_description = models.CharField(max_length=255, blank=True)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.customer_service
+
+
+class NetworkServiceMap(models.Model):
+    network_service_map_id = models.AutoField(primary_key=True)
+    system = models.ForeignKey(System)
+    network_service = models.ForeignKey(NetworkService)
+    network_service_map_description = models.CharField(max_length=255, blank=True)
+    customer_service = models.ForeignKey(CustomerService, blank=True, null=True, on_delete=models.SET_NULL)
+    def __str__(self):              # __unicode__ on Python 2
+        return self.network_service_map_description
+
+
+class Backup(models.Model):
+    backup_id = models.AutoField(primary_key=True)
+    backup_description = models.CharField(max_length=255, blank=True)
+    backup_host = models.CharField(max_length=75)
+    backup_location = models.CharField(max_length=75) # Make seperate table
+    backup_basedir = models.CharField(max_length=255)
+    system = models.ForeignKey(System)
+    backup_scheme = models.CharField(max_length=255) # Make seperate table
+    backup_type= models.CharField(max_length=255) # Make seperate table
+
+
+class Filesystem(models.Model):
+    filesystem = models.AutoField(primary_key=True)
+    filesystem_type =  models.CharField(max_length=75) # Make seperate table
+    filesystem_mountpoint = models.CharField(max_length=255)
+    filesystem_storagebackend = models.CharField(max_length=75) # Make seperate table
+    system = models.ForeignKey(System)
+    filesystem_devicefile = models.CharField(max_length=75)
+
+}}}
+
+Add the new app to admin/admin/settings.py
+
+{{{#!highlight python
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'system',
+)
+
+}}}
+
+Create admin/system/admin.py:
+
+{{{#!highlight python
+from django.contrib import admin
+from system.models import Area
+from system.models import Landspace
+from system.models import Type
+from system.models import System
+from system.models import NetworkService
+from system.models import CustomerService
+from system.models import NetworkServiceMap
+
+class NetworkServiceMapInline(admin.TabularInline):
+    model = NetworkServiceMap
+    extra = 3
+
+
+class ServiceInline(admin.TabularInline):
+    model = System
+    extra = 3
+
+
+class SystemAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['system', 'type_id']}),
+        ('Details', {'fields': ['system_description', 'system_note'], 'classes': ['collapse']}),
+        ('Mapping', {'fields': ['area_id', 'landspace_id'], 'classes': ['collapse']})
+    ]
+    inlines = [NetworkServiceMapInline]
+    # fields = ['system', 'type_id', 'system_description', 'system_note', 'area_id', 'landspace_id']
+    list_filter = ('area_id', 'type_id', 'landspace_id')
+    search_fields = ['system']
+
+class CustomerServiceAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['customer_service', 'customer_service_description']})
+    ]
+    inlines = [NetworkServiceMapInline]
+
+
+admin.site.register(System, SystemAdmin)
+admin.site.register(CustomerService, CustomerServiceAdmin)
+admin.site.register(Area)
+admin.site.register(Landspace)
+admin.site.register(Type)
+admin.site.register(NetworkService)
+admin.site.register(NetworkServiceMap)
+from django.contrib import admin
+from system.models import Area
+from system.models import Landspace
+from system.models import Type
+from system.models import System
+from system.models import NetworkService
+from system.models import CustomerService
+from system.models import NetworkServiceMap
+
+class NetworkServiceMapInline(admin.TabularInline):
+    model = NetworkServiceMap
+    extra = 3
+
+
+class ServiceInline(admin.TabularInline):
+    model = System
+    extra = 3
+
+
+class SystemAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['system', 'type_id']}),
+        ('Details', {'fields': ['system_description', 'system_note'], 'classes': ['collapse']}),
+        ('Mapping', {'fields': ['area_id', 'landspace_id'], 'classes': ['collapse']})
+    ]
+    inlines = [NetworkServiceMapInline]
+    # fields = ['system', 'type_id', 'system_description', 'system_note', 'area_id', 'landspace_id']
+    list_filter = ('area_id', 'type_id', 'landspace_id')
+    search_fields = ['system']
+
+class CustomerServiceAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['customer_service', 'customer_service_description']})
+    ]
+    inlines = [NetworkServiceMapInline]
+
+
+admin.site.register(System, SystemAdmin)
+admin.site.register(CustomerService, CustomerServiceAdmin)
+admin.site.register(Area)
+admin.site.register(Landspace)
+admin.site.register(Type)
+admin.site.register(NetworkService)
+admin.site.register(NetworkServiceMap)
+}}}
+
+Now prepare migration and migrate:
+
+{{{#!highlight shell-session
+melly@122-aletheia [41] $ python3 manage.py makemigrations
+Migrations for 'system':
+  0001_initial.py:
+    - Create model Area
+    - Create model Backup
+    - Create model CustomerService
+    - Create model Filesystem
+    - Create model Landspace
+    - Create model NetworkService
+    - Create model NetworkServiceMap
+    - Create model System
+    - Create model Type
+    - Add field type to system
+    - Add field system to networkservicemap
+    - Add field system to filesystem
+    - Add field system to backup
+[23:52:18]~/django/admin 
+melly@122-aletheia [42] $ python3 manage.py migrate       
+Operations to perform:
+  Apply all migrations: admin, contenttypes, auth, sessions, system
+Running migrations:
+  Applying system.0001_initial... OK
+}}}
